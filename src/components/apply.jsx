@@ -42,7 +42,7 @@ export const Apply = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+
       firebase.auth().createUserWithEmailAndPassword(formik.values.email, formik.values.password)
       .then(res => {
         const user = firebase.auth().currentUser

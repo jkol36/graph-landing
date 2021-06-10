@@ -1,4 +1,5 @@
 import React, { useContext, useState, useCallback, useEffect } from "react";
+import { useHistory } from 'react-router-dom';
 import { Link } from './Link';
 import agent from 'superagent-bluebird-promise';
 
@@ -6,6 +7,7 @@ import agent from 'superagent-bluebird-promise';
 
 export const PlaidView = () => {
   const [token, setToken] = useState(null);
+  const history = useHistory()
 
   const createLinkToken = async () => {
       let response =  await fetch("/api/create_link_token", {method: 'POST'});
@@ -16,7 +18,9 @@ export const PlaidView = () => {
   useEffect(() => createLinkToken(), [])
   const onSuccess = useCallback((token, metadata) => {
     console.log('on success called', token, metadata)
-    // send token to server
+    // store token in localstorage
+    localStorage.setItem('plaidToken', token)
+
   }, []);
 
   return (

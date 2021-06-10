@@ -1,10 +1,13 @@
 import React, { useEffect, useContext } from "react";
+import { useHistory } from 'react-router-dom';
 import { usePlaidLink } from "react-plaid-link";
 import Button from "plaid-threads/Button";
 
 
 export const Link = () => {
   const linkToken  = localStorage.getItem('link_token')
+  const history = useHistory()
+  
 
   const onSuccess = React.useCallback(
     (public_token) => {
@@ -24,11 +27,9 @@ export const Link = () => {
         }
         const data = await response.json();
         console.log('link data', data)
-        localStorage.setItem('state', {
-            itemId: data.item_id,
-            accessToken: data.access_token,
-            isItemAccess: true,
-          },)
+        localStorage.setItem('accessToken', data.access_token)
+        localStorage.setItem('isItemAccess', true)
+        localStorage.setItem('itemId', data.item_id)
       };
       setToken();
     },
@@ -39,6 +40,11 @@ export const Link = () => {
   const config = {
     token: linkToken,
     onSuccess,
+    onEvent: (event) => {
+      if(event === "HANDOFF") {
+        history.push('/summary')
+      }
+    }
   };
 
   if (window.location.href.includes("?oauth_state_id=")) {
@@ -47,6 +53,10 @@ export const Link = () => {
     config.receivedRedirectUri = window.location.href;
     isOauth = true;
   }
+
+  // if(localStorage.getItem('accessToken') !== undefined) {
+  //   history.push('/summary')
+  // }
 
   const { open, ready } = usePlaidLink(config);
 

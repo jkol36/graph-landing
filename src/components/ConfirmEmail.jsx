@@ -9,6 +9,7 @@ export const ConfirmEmailView = (props) => {
     firebase.auth().onAuthStateChanged((user) => {
       console.log('new user object', user)
       const {emailVerified} = user
+      console.log('emailVerified', emailVerified)
       if(emailVerified) {
         history.push('/banking')
       }
@@ -17,8 +18,14 @@ export const ConfirmEmailView = (props) => {
 
 
   const checkForEmailConfirmation = () => {
-    const user = firebase.auth().currentUser
-    console.log(user)
+    const user = firebase.auth().currentUser.reload()
+    console.log('new user', user)
+    const {emailVerified} = firebase.auth().currentUser
+    console.log(emailVerified)
+    if(emailVerified) {
+      history.push('/banking')
+    }
+
   }
 
   return (

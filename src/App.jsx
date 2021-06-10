@@ -10,9 +10,10 @@ import { Team } from './components/Team'
 import { Contact } from './components/contact'
 import { Apply } from './components/apply'
 import { ConfirmEmailView } from './components/ConfirmEmail'
+import { Summary } from './components/summary'
 import JsonData from './data/data.json'
 import SmoothScroll from 'smooth-scroll'
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
+import {BrowserRouter as Router, useHistory, Switch, Route} from 'react-router-dom'
 import { PlaidView } from './components/PlaidView'
 
 
@@ -22,11 +23,22 @@ export const scroll = new SmoothScroll('a[href*="#"]', {
 })
 
 const App = () => {
+  //we store the landingpagedata in a variable and setlandingpage data is the name of the function we'll use to update the landing page data
+
   const [landingPageData, setLandingPageData] = useState({})
+  const history = useHistory()
   useEffect(() => {
     console.log('apply', Apply)
     setLandingPageData(JsonData)
+     window.addEventListener('storage', () => {
+      console.log('change')
+      if(localStorage.getItem('accessToken') !== undefined) {
+        history.push('/summary')
+      }
+    })
   }, [])
+
+
 
   return (
     <Router>
@@ -57,6 +69,12 @@ const App = () => {
         <Route path='/banking'> 
           <Navigation />
           <PlaidView />
+        </Route>
+      </Switch>
+      <Switch> 
+        <Route path='/summary'> 
+          <Navigation />
+          <Summary />
         </Route>
       </Switch>
     </Router>
